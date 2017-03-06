@@ -30,11 +30,35 @@ class LoginViewController: UIViewController {
         var accountDictionary = [String:AnyObject]()
         let task = session.dataTask(with:request as URLRequest) {
             data, response, error in
+            let alertController = UIAlertController()
+            let appDelegate = UIApplication.shared.delegate as! AppDelegate
+            appDelegate.onTheMap = true
+            var title: String?
             if error != nil {
+                title = "Network Error"
+            }
+            let statusCode = (response as? HTTPURLResponse)?.statusCode
+            if statusCode == nil || statusCode! < 200 || statusCode! > 299 {
+                title = "Invalid Username or Password"
+            }
+            
+            if data == nil {
+                title = "No data was returned by the request"
+            }
+            if title != nil {
+                alertController.title = title!
+                let cancelAction = UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.cancel)
+                alertController.addAction(cancelAction)
+                DispatchQueue.main.async(execute: {
+                    self.present(alertController, animated: true, completion: nil)
+                })
                 return
             }
-            let range = Range(uncheckedBounds: (5, data!.count))
+            
+            
+            let range = Range(uncheckedBounds: (5, (data?.count)!))
             let newData = data?.subdata(in: range)
+            
             print(NSString(data: newData!, encoding: String.Encoding.utf8.rawValue)!)
             OperationQueue.main.addOperation{
                 let viewController = self.storyboard!.instantiateViewController(withIdentifier:         "TabBarViewController") as UIViewController

@@ -61,9 +61,11 @@ class MapTableViewController: UITableViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        
+        //And where you want to start animating
         super.viewWillAppear(animated)
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        students = appDelegate.students
+        students = appDelegate.model.students
         GetData().getStudentsLocations(renderer: { self.tableView.reloadData() })
         
     }
@@ -86,7 +88,9 @@ class MapTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let student = students[indexPath.item]
-        if !UIApplication.shared.canOpenURL(NSURL(string: student.mediaURL)! as URL) {
+        let userURL = NSURL(string: student.mediaURL) as URL?
+        
+        if userURL == nil || !UIApplication.shared.canOpenURL(userURL!) {
             let alertController = UIAlertController()
             alertController.title = "Invalid Link"
             let okAction = UIAlertAction(title:"Dismiss", style:UIAlertActionStyle.default) //{
@@ -95,7 +99,7 @@ class MapTableViewController: UITableViewController {
             alertController.addAction(okAction)
             self.present(alertController, animated: true, completion: nil)
         } else {
-            UIApplication.shared.openURL(NSURL(string: student.mediaURL)! as URL)
+            UIApplication.shared.openURL(userURL! as URL)
         }
     }
 }

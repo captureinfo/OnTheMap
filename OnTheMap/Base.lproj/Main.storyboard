@@ -104,12 +104,12 @@
                             </connections>
                         </barButtonItem>
                         <rightBarButtonItems>
-                            <barButtonItem systemItem="add" id="F0x-Dh-6xY">
+                            <barButtonItem systemItem="refresh" id="SDp-JD-K08"/>
+                            <barButtonItem image="pin" id="F0x-Dh-6xY">
                                 <connections>
                                     <action selector="decideToAdd:" destination="7jl-PJ-PrV" id="GnT-0a-HDN"/>
                                 </connections>
                             </barButtonItem>
-                            <barButtonItem systemItem="refresh" id="SDp-JD-K08"/>
                         </rightBarButtonItems>
                     </navigationItem>
                 </tableViewController>
@@ -234,10 +234,10 @@
             </objects>
             <point key="canvasLocation" x="514" y="-353"/>
         </scene>
-        <!--Title-->
+        <!--MapViewController-->
         <scene sceneID="w8P-1g-44V">
             <objects>
-                <viewController storyboardIdentifier="ConnectWithParse" useStoryboardIdentifierAsRestorationIdentifier="YES" id="l9p-4S-jjx" customClass="ConnectWithParse" customModule="OnTheMap" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="MapViewController" title="MapViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="l9p-4S-jjx" customClass="MapViewController" customModule="OnTheMap" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Ejy-5k-e3d"/>
                         <viewControllerLayoutGuide type="bottom" id="KD4-6t-W97"/>
@@ -268,12 +268,12 @@
                             </connections>
                         </barButtonItem>
                         <rightBarButtonItems>
-                            <barButtonItem systemItem="add" id="JGQ-ws-snA">
+                            <barButtonItem systemItem="refresh" id="uiF-LC-RWU"/>
+                            <barButtonItem image="pin" id="JGQ-ws-snA">
                                 <connections>
                                     <action selector="decideToAdd:" destination="l9p-4S-jjx" id="sXi-EV-I4G"/>
                                 </connections>
                             </barButtonItem>
-                            <barButtonItem systemItem="refresh" id="uiF-LC-RWU"/>
                         </rightBarButtonItems>
                     </navigationItem>
                     <connections>
@@ -367,6 +367,7 @@
         <image name="Udacity" width="256" height="256"/>
         <image name="list" width="32" height="32"/>
         <image name="map" width="32" height="32"/>
+        <image name="pin" width="32" height="32"/>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="jUg-t1-3hW"/>

@@ -28,16 +28,21 @@ class GetData {
                 
                 var students = [Student]()
                 for dictionary in locations {
+                    let filteredPairs = dictionary.filter({!($1 is NSNull)})
+                    var filteredDict = [String:AnyObject]()
+                    for (k, v) in filteredPairs {
+                        filteredDict[k] = v
+                    }
                     
                     // Notice that the float values are being used to create CLLocationDegree values.
                     // This is a version of the Double type.
-                    if (Set(["latitude", "longitude", "firstName", "lastName", "mediaURL", "uniqueKey"]).isSubset(of: Set(dictionary.keys))) {
-                        students.append(Student(dictionary: dictionary))
+                    if (Set(["latitude", "longitude", "firstName", "lastName", "mediaURL", "uniqueKey"]).isSubset(of: Set(filteredDict.keys))) {
+                        students.append(Student(dictionary: filteredDict))
                     }
                 }
                 
                 let appDelegate = UIApplication.shared.delegate as! AppDelegate
-                appDelegate.students = students
+                appDelegate.model.students = students
                 
                 
                 renderer()

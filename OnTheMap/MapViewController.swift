@@ -1,10 +1,3 @@
-//
-//  connectWithParse.swift
-//  OnTheMap
-//
-//  Created by Yang Gao on 2/18/17.
-//  Copyright © 2017 Yang Gao. All rights reserved.
-//
 
 import UIKit
 //
@@ -29,7 +22,7 @@ import MapKit
  * respond when the "info" button is tapped.
  */
 
-class ConnectWithParse: UIViewController, MKMapViewDelegate {
+class MapViewController: UIViewController, MKMapViewDelegate {
     
     // The map. See the setup in the Storyboard file. Note particularly that the view controller
     // is set up as the map view's delegate.
@@ -38,7 +31,7 @@ class ConnectWithParse: UIViewController, MKMapViewDelegate {
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
     
     @IBAction func decideToAdd(_ sender: AnyObject) {
-        let urlString = "https://parse.udacity.com/parse/classes/StudentLocation?where=%7B%22uniqueKey%22%3A%22\(appDelegate.accountKey!)%22%7D"
+        let urlString = "https://parse.udacity.com/parse/classes/StudentLocation?where=%7B%22uniqueKey%22%3A%22\(appDelegate.accountKey!)%22%7D&order=-updatedAt&limit=100"
         
         let url = URL(string: urlString)
         let request = NSMutableURLRequest(url: url!)
@@ -85,7 +78,7 @@ class ConnectWithParse: UIViewController, MKMapViewDelegate {
         // data that you can download from parse.
         GetData().getStudentsLocations(renderer: {
             var annotations = [MKPointAnnotation]()
-            for student in (UIApplication.shared.delegate as! AppDelegate).students {
+            for student in (UIApplication.shared.delegate as! AppDelegate).model.students {
                 
                 // The lat and long are used to create a CLLocationCoordinates2D instance.
                 let coordinate = CLLocationCoordinate2D(latitude: student.latitude, longitude: student.longitude)
@@ -138,7 +131,18 @@ class ConnectWithParse: UIViewController, MKMapViewDelegate {
         if control == view.rightCalloutAccessoryView {
             let app = UIApplication.shared
             if let toOpen = view.annotation?.subtitle! {
-                app.openURL(NSURL(string: toOpen)! as URL)
+                let userURL = NSURL(string: toOpen) as URL?
+                if userURL == nil || !UIApplication.shared.canOpenURL(userURL!) {
+                    let alertController = UIAlertController()
+                    alertController.title = "Invalid Link"
+                    let okAction = UIAlertAction(title:"Dismiss", style:UIAlertActionStyle.default) //{
+                    //  action in self.dismiss(animated: true, completion: nil)
+                    // }
+                    alertController.addAction(okAction)
+                    self.present(alertController, animated: true, completion: nil)
+                } else {
+                    UIApplication.shared.openURL(userURL! as URL)
+                }
             }
         }
     }

@@ -43,9 +43,16 @@ class AddSingleLocationController: UIViewController, MKMapViewDelegate {
     func getGeoLocation(_ address: String) {
         let geocoder = CLGeocoder()
         
+        let indicator = UIActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
+        indicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.gray
+        indicator.center = self.view.center
+        indicator.backgroundColor = UIColor.white
+        self.view.addSubview(indicator)
+        indicator.startAnimating()
+        
         geocoder.geocodeAddressString(address, completionHandler: {(placemarks, error) -> Void in
             if((error) != nil){
-                print("Error", error)
+                self.showAlert()
             }
             if let placemark = placemarks?.first {
                 self.coordinates = placemark.location!.coordinate
@@ -57,6 +64,9 @@ class AddSingleLocationController: UIViewController, MKMapViewDelegate {
                 annotation.title = "\(self.firstName) \(self.lastName)"
                 annotation.subtitle = self.website
                 self.mapView.addAnnotations([annotation])
+                //For stop:
+                indicator.stopAnimating()
+                indicator.hidesWhenStopped = true
             }
         })
     }
@@ -96,7 +106,7 @@ class AddSingleLocationController: UIViewController, MKMapViewDelegate {
         request.httpBody = "{\"uniqueKey\": \(accountKey), \"firstName\": \(self.firstName), \"lastName\": \(self.lastName),\"mapString\": \(self.address), \"mediaURL\": \(self.website),\"latitude\": \(coordinates.latitude), \"longitude\": \(coordinates.longitude)}".data(using: String.Encoding.utf8)
         let session = URLSession.shared
         let task = session.dataTask(with: request as URLRequest) { data, response, error in
-            if error != nil { // Handle error…
+            if error != nil {
                 return
             }
             print(NSString(data: data!, encoding: String.Encoding.utf8.rawValue)!)
@@ -116,7 +126,7 @@ class AddSingleLocationController: UIViewController, MKMapViewDelegate {
         request.httpBody = "{\"uniqueKey\": \(accountKey), \"firstName\": \(self.firstName), \"lastName\": \(self.lastName), \"mapString\": \(self.address), \"mediaURL\": \(self.website), \"latitude\": \(coordinates.latitude), \"longitude\": \(coordinates.longitude)}".data(using: String.Encoding.utf8)
         let session = URLSession.shared
         _ = session.dataTask(with: request as URLRequest) { data, response, error in
-            if error != nil { // Handle error…
+            if error != nil {
                 return
             }
             print(NSString(data: data!, encoding: String.Encoding.utf8.rawValue)!)
@@ -141,7 +151,12 @@ class AddSingleLocationController: UIViewController, MKMapViewDelegate {
         
         return pinView
     }
-    
+    func showAlert() {
+        let alertController = UIAlertController()
+        alertController.title = "Not a valid address"
+        let cancelAction = UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.cancel)
+        alertController.addAction(cancelAction)
+        self.present(alertController, animated: true, completion: nil)    }
     
     // This delegate method is implemented to respond to taps. It opens the system browser
     // to the URL specified in the annotationViews subtitle property.
