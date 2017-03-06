@@ -26,18 +26,27 @@ class AddSingleLocationController: UIViewController, MKMapViewDelegate {
     @IBAction func finish(_ sender: AnyObject) {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         if appDelegate.onTheMap {
-            self.putStudentLocation(self.coordinates!)
+            self.putStudentLocation(self.coordinates!, sender: sender)
         }else {
-            self.postAStudentLocation(self.coordinates!)
+            self.postAStudentLocation(self.coordinates!, sender: sender)
         }
-        performSegue(withIdentifier: "finishSegue", sender: sender)
     }
     
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
     
+    func centerMapOnLocation(location: CLLocation)
+    {
+        let regionRadius: CLLocationDistance = 20000
+        let coordinateRegion = MKCoordinateRegionMakeWithDistance(location.coordinate,
+                                                                  regionRadius * 2.0, regionRadius * 2.0)
+        mapView.setRegion(coordinateRegion, animated: true)
+    }
+
+    
     override func viewDidLoad() {
         getGeoLocation(address)
         self.mapView.delegate = self
+        mapView.showsUserLocation = true
     }
     
     func getGeoLocation(_ address: String) {
@@ -52,7 +61,7 @@ class AddSingleLocationController: UIViewController, MKMapViewDelegate {
         
         geocoder.geocodeAddressString(address, completionHandler: {(placemarks, error) -> Void in
             if((error) != nil){
-                self.showAlert()
+                self.showAlert(title: "Not a valid address")
             }
             if let placemark = placemarks?.first {
                 self.coordinates = placemark.location!.coordinate
@@ -64,6 +73,10 @@ class AddSingleLocationController: UIViewController, MKMapViewDelegate {
                 annotation.title = "\(self.firstName) \(self.lastName)"
                 annotation.subtitle = self.website
                 self.mapView.addAnnotations([annotation])
+                
+                let homeLocation = CLLocation(latitude: (self.coordinates?.latitude)!, longitude:(self.coordinates?.longitude)!)
+                self.centerMapOnLocation(location: homeLocation)
+                
                 //For stop:
                 indicator.stopAnimating()
                 indicator.hidesWhenStopped = true
@@ -96,7 +109,7 @@ class AddSingleLocationController: UIViewController, MKMapViewDelegate {
         task.resume()
     }
     
-    func postAStudentLocation(_ coordinates: CLLocationCoordinate2D) {
+    func postAStudentLocation(_ coordinates: CLLocationCoordinate2D, sender: AnyObject) {
         let request = NSMutableURLRequest(url: URL(string: "https://parse.udacity.com/parse/classes/StudentLocation")!)
         let accountKey = appDelegate.accountKey
         request.httpMethod = "POST"
@@ -107,14 +120,15 @@ class AddSingleLocationController: UIViewController, MKMapViewDelegate {
         let session = URLSession.shared
         let task = session.dataTask(with: request as URLRequest) { data, response, error in
             if error != nil {
-                return
+                self.showAlert(title:"Network not available")
+            } else {
+                self.performSegue(withIdentifier: "finishSegue", sender: sender)
             }
-            print(NSString(data: data!, encoding: String.Encoding.utf8.rawValue)!)
         }
         task.resume()
     }
     
-    func putStudentLocation(_ coordinates: CLLocationCoordinate2D) {
+    func putStudentLocation(_ coordinates: CLLocationCoordinate2D, sender: AnyObject) {
         let urlString = "https://parse.udacity.com/parse/classes/StudentLocation/8ZExGR5uX8"
         let url = URL(string: urlString)
         let accountKey = appDelegate.accountKey
@@ -125,12 +139,14 @@ class AddSingleLocationController: UIViewController, MKMapViewDelegate {
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpBody = "{\"uniqueKey\": \(accountKey), \"firstName\": \(self.firstName), \"lastName\": \(self.lastName), \"mapString\": \(self.address), \"mediaURL\": \(self.website), \"latitude\": \(coordinates.latitude), \"longitude\": \(coordinates.longitude)}".data(using: String.Encoding.utf8)
         let session = URLSession.shared
-        _ = session.dataTask(with: request as URLRequest) { data, response, error in
+        let task = session.dataTask(with: request as URLRequest) { data, response, error in
             if error != nil {
-                return
+                self.showAlert(title:"Network not available")
+            } else {
+                self.performSegue(withIdentifier: "finishSegue", sender: sender)
             }
-            print(NSString(data: data!, encoding: String.Encoding.utf8.rawValue)!)
         }
+        task.resume()
     }
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
@@ -151,9 +167,9 @@ class AddSingleLocationController: UIViewController, MKMapViewDelegate {
         
         return pinView
     }
-    func showAlert() {
+    func showAlert(title:String) {
         let alertController = UIAlertController()
-        alertController.title = "Not a valid address"
+        alertController.title = title
         let cancelAction = UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.cancel)
         alertController.addAction(cancelAction)
         self.present(alertController, animated: true, completion: nil)    }
