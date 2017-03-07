@@ -38,6 +38,9 @@ class MapTableViewController: UITableViewController {
             let controller = storyboard?.instantiateViewController(withIdentifier: "AddLocationNavigationController")
             self.present(controller!, animated: true, completion:nil)
         } else {
+            self.appDelegate.model.objectId = pinData["objectId"] as! String?
+            self.appDelegate.model.firstName = pinData["firstName"] as! String?
+            self.appDelegate.model.lastName = pinData["lastName"] as! String?
             let alertController = UIAlertController()
             alertController.title = "You has already posted a Student Location. Would you like to overwrite the location?"
             let appDelegate = UIApplication.shared.delegate as! AppDelegate

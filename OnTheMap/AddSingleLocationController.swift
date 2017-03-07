@@ -13,8 +13,6 @@ import CoreLocation
 
 
 class AddSingleLocationController: UIViewController, MKMapViewDelegate {
-    var firstName: String!
-    var lastName: String!
     var address: String!
     var website: String!
     var coordinates: CLLocationCoordinate2D?
@@ -70,7 +68,7 @@ class AddSingleLocationController: UIViewController, MKMapViewDelegate {
                 // Here we create the annotation and set its coordiate, title, and subtitle properties
                 let annotation = MKPointAnnotation()
                 annotation.coordinate = self.coordinates!
-                annotation.title = "\(self.firstName) \(self.lastName)"
+                annotation.title = "\(self.appDelegate.model.firstName!) \(self.appDelegate.model.lastName!)"
                 annotation.subtitle = self.website
                 self.mapView.addAnnotations([annotation])
                 
@@ -84,31 +82,6 @@ class AddSingleLocationController: UIViewController, MKMapViewDelegate {
         })
     }
     
-    
-    func getPublicUserData() {
-        let baseURL = "https://www.udacity.com/api/users/"
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        let accountKey = appDelegate.accountKey
-        let newURL = baseURL + accountKey!
-        let request = NSMutableURLRequest(url: URL(string: newURL)!)
-        let session = URLSession.shared
-        var accountDictionary = [String:AnyObject]()
-        let task = session.dataTask(with: request as URLRequest) { data, response, error in
-            if error != nil { // Handle error...
-                return
-            }
-            let range = Range(uncheckedBounds: (5, data!.count - 5))
-            let newData = data?.subdata(in: range) /* subset response data! */
-            OperationQueue.main.addOperation{
-                accountDictionary = try! JSONSerialization.jsonObject(with: data!, options: .allowFragments) as! [String : AnyObject]
-                self.firstName = accountDictionary["firstName"] as! String!
-                self.lastName = accountDictionary["lastName"] as! String!
-            }
-            print(NSString(data: newData!, encoding: String.Encoding.utf8.rawValue)!)
-        }
-        task.resume()
-    }
-    
     func postAStudentLocation(_ coordinates: CLLocationCoordinate2D, sender: AnyObject) {
         let request = NSMutableURLRequest(url: URL(string: "https://parse.udacity.com/parse/classes/StudentLocation")!)
         let accountKey = appDelegate.accountKey
@@ -116,7 +89,7 @@ class AddSingleLocationController: UIViewController, MKMapViewDelegate {
         request.addValue("QrX47CA9cyuGewLdsL7o5Eb8iug6Em8ye0dnAbIr", forHTTPHeaderField: "X-Parse-Application-Id")
         request.addValue("QuWThTdiRmTux3YaDseUSEpUKo7aBYM737yKd4gY", forHTTPHeaderField: "X-Parse-REST-API-Key")
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpBody = "{\"uniqueKey\": \(accountKey), \"firstName\": \(self.firstName), \"lastName\": \(self.lastName),\"mapString\": \(self.address), \"mediaURL\": \(self.website),\"latitude\": \(coordinates.latitude), \"longitude\": \(coordinates.longitude)}".data(using: String.Encoding.utf8)
+        request.httpBody = "{\"uniqueKey\": \"\(accountKey!)\", \"firstName\": \"\(self.appDelegate.model.firstName!)\", \"lastName\": \"\(self.appDelegate.model.lastName!)\", \"mapString\": \"\(self.address!)\", \"mediaURL\": \"\(self.website!)\", \"latitude\": \(coordinates.latitude), \"longitude\": \(coordinates.longitude)}".data(using: String.Encoding.utf8)
         let session = URLSession.shared
         let task = session.dataTask(with: request as URLRequest) { data, response, error in
             if error != nil {
@@ -129,7 +102,7 @@ class AddSingleLocationController: UIViewController, MKMapViewDelegate {
     }
     
     func putStudentLocation(_ coordinates: CLLocationCoordinate2D, sender: AnyObject) {
-        let urlString = "https://parse.udacity.com/parse/classes/StudentLocation/8ZExGR5uX8"
+        let urlString = "https://parse.udacity.com/parse/classes/StudentLocation/\(self.appDelegate.model.objectId!)"
         let url = URL(string: urlString)
         let accountKey = appDelegate.accountKey
         let request = NSMutableURLRequest(url: url!)
@@ -137,7 +110,7 @@ class AddSingleLocationController: UIViewController, MKMapViewDelegate {
         request.addValue("QrX47CA9cyuGewLdsL7o5Eb8iug6Em8ye0dnAbIr", forHTTPHeaderField: "X-Parse-Application-Id")
         request.addValue("QuWThTdiRmTux3YaDseUSEpUKo7aBYM737yKd4gY", forHTTPHeaderField: "X-Parse-REST-API-Key")
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpBody = "{\"uniqueKey\": \(accountKey), \"firstName\": \(self.firstName), \"lastName\": \(self.lastName), \"mapString\": \(self.address), \"mediaURL\": \(self.website), \"latitude\": \(coordinates.latitude), \"longitude\": \(coordinates.longitude)}".data(using: String.Encoding.utf8)
+        request.httpBody = "{\"uniqueKey\": \"\(accountKey!)\", \"firstName\": \"\(self.appDelegate.model.firstName!)\", \"lastName\": \"\(self.appDelegate.model.lastName!)\", \"mapString\": \"\(self.address!)\", \"mediaURL\": \"\(self.website!)\", \"latitude\": \(coordinates.latitude), \"longitude\": \(coordinates.longitude)}".data(using: String.Encoding.utf8)
         let session = URLSession.shared
         let task = session.dataTask(with: request as URLRequest) { data, response, error in
             if error != nil {
@@ -146,6 +119,7 @@ class AddSingleLocationController: UIViewController, MKMapViewDelegate {
                 self.performSegue(withIdentifier: "finishSegue", sender: sender)
             }
         }
+        // "{\"uniqueKey\": \"5387367977\", \"firstName\": \"Jieyi\", \"lastName\": \"Gao\", \"mapString\": \"Kansas\", \"mediaURL\": \"http://amazon.com\", \"latitude\": 38.5417494, \"longitude\": -98.4287914}"
         task.resume()
     }
     

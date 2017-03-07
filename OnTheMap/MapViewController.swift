@@ -50,10 +50,15 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     
     func getStudentLocationHandler(_ data: Data) {
         let pinData = try! JSONSerialization.jsonObject(with: data, options: .allowFragments) as! [String : AnyObject]
-        if (pinData["results"] == nil || pinData["results"]?.count == 0) {
+        let results = pinData["results"] as! [[String:AnyObject]]?
+        if (results == nil || results?.count == 0) {
             let controller = storyboard?.instantiateViewController(withIdentifier: "AddLocationNavigationController")
             self.present(controller!, animated: true, completion:nil)
         } else {
+            let studentInfo = results?[0]
+            self.appDelegate.model.objectId = studentInfo?["objectId"] as! String?
+            self.appDelegate.model.firstName = studentInfo?["firstName"] as! String?
+            self.appDelegate.model.lastName = studentInfo? ["lastName"] as! String?
             let alertController = UIAlertController()
             alertController.title = "You has already posted a Student Location. Would you like to overwrite the location?"
             let appDelegate = UIApplication.shared.delegate as! AppDelegate

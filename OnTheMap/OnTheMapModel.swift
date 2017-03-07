@@ -8,5 +8,8 @@
 
 import Foundation
 class OnTheMapModel {
+    var firstName: String?
+    var lastName: String?
     var students = [Student]()
+    var objectId: String?
 }
