@@ -23,11 +23,16 @@ class AddSingleLocationController: UIViewController, MKMapViewDelegate {
     
     @IBAction func finish(_ sender: AnyObject) {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        var method: String
+        var urlString: String
         if appDelegate.onTheMap {
-            self.putStudentLocation(self.coordinates!, sender: sender)
-        }else {
-            self.postAStudentLocation(self.coordinates!, sender: sender)
+            method = "PUT"
+            urlString = "https://parse.udacity.com/parse/classes/StudentLocation/\(self.appDelegate.model.objectId!)"
+        } else {
+            method = "POST"
+            urlString = "https://parse.udacity.com/parse/classes/StudentLocation"
         }
+        self.updateStudentLocation(self.coordinates!, sender: sender, method: method, urlString: urlString)
     }
     
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
@@ -82,12 +87,10 @@ class AddSingleLocationController: UIViewController, MKMapViewDelegate {
         })
     }
     
-    func postAStudentLocation(_ coordinates: CLLocationCoordinate2D, sender: AnyObject) {
-        let request = NSMutableURLRequest(url: URL(string: "https://parse.udacity.com/parse/classes/StudentLocation")!)
+    func updateStudentLocation(_ coordinates: CLLocationCoordinate2D, sender: AnyObject, method: String, urlString: String) {
+        let request = NetworkService.addCredentialsToRequest(NSMutableURLRequest(url: URL(string: urlString)!))
         let accountKey = appDelegate.accountKey
-        request.httpMethod = "POST"
-        request.addValue("QrX47CA9cyuGewLdsL7o5Eb8iug6Em8ye0dnAbIr", forHTTPHeaderField: "X-Parse-Application-Id")
-        request.addValue("QuWThTdiRmTux3YaDseUSEpUKo7aBYM737yKd4gY", forHTTPHeaderField: "X-Parse-REST-API-Key")
+        request.httpMethod = method
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpBody = "{\"uniqueKey\": \"\(accountKey!)\", \"firstName\": \"\(self.appDelegate.model.firstName!)\", \"lastName\": \"\(self.appDelegate.model.lastName!)\", \"mapString\": \"\(self.address!)\", \"mediaURL\": \"\(self.website!)\", \"latitude\": \(coordinates.latitude), \"longitude\": \(coordinates.longitude)}".data(using: String.Encoding.utf8)
         let session = URLSession.shared
@@ -98,28 +101,6 @@ class AddSingleLocationController: UIViewController, MKMapViewDelegate {
                 self.performSegue(withIdentifier: "finishSegue", sender: sender)
             }
         }
-        task.resume()
-    }
-    
-    func putStudentLocation(_ coordinates: CLLocationCoordinate2D, sender: AnyObject) {
-        let urlString = "https://parse.udacity.com/parse/classes/StudentLocation/\(self.appDelegate.model.objectId!)"
-        let url = URL(string: urlString)
-        let accountKey = appDelegate.accountKey
-        let request = NSMutableURLRequest(url: url!)
-        request.httpMethod = "PUT"
-        request.addValue("QrX47CA9cyuGewLdsL7o5Eb8iug6Em8ye0dnAbIr", forHTTPHeaderField: "X-Parse-Application-Id")
-        request.addValue("QuWThTdiRmTux3YaDseUSEpUKo7aBYM737yKd4gY", forHTTPHeaderField: "X-Parse-REST-API-Key")
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpBody = "{\"uniqueKey\": \"\(accountKey!)\", \"firstName\": \"\(self.appDelegate.model.firstName!)\", \"lastName\": \"\(self.appDelegate.model.lastName!)\", \"mapString\": \"\(self.address!)\", \"mediaURL\": \"\(self.website!)\", \"latitude\": \(coordinates.latitude), \"longitude\": \(coordinates.longitude)}".data(using: String.Encoding.utf8)
-        let session = URLSession.shared
-        let task = session.dataTask(with: request as URLRequest) { data, response, error in
-            if error != nil {
-                self.showAlert(title:"Network not available")
-            } else {
-                self.performSegue(withIdentifier: "finishSegue", sender: sender)
-            }
-        }
-        // "{\"uniqueKey\": \"5387367977\", \"firstName\": \"Jieyi\", \"lastName\": \"Gao\", \"mapString\": \"Kansas\", \"mediaURL\": \"http://amazon.com\", \"latitude\": 38.5417494, \"longitude\": -98.4287914}"
         task.resume()
     }
     
