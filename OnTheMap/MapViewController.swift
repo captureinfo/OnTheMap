@@ -27,6 +27,9 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     // The map. See the setup in the Storyboard file. Note particularly that the view controller
     // is set up as the map view's delegate.
     @IBOutlet weak var mapView: MKMapView!
+    @IBAction func Logout(_ sender: UIBarButtonItem) {
+        NetworkService.sharedInstance.logoutWithUdacity()
+    }
     
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
     
@@ -56,9 +59,9 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             self.present(controller!, animated: true, completion:nil)
         } else {
             let studentInfo = results?[0]
-            self.appDelegate.model.objectId = studentInfo?["objectId"] as! String?
-            self.appDelegate.model.firstName = studentInfo?["firstName"] as! String?
-            self.appDelegate.model.lastName = studentInfo? ["lastName"] as! String?
+            OnTheMapModel.sharedInstance.objectId = studentInfo?["objectId"] as! String?
+            OnTheMapModel.sharedInstance.firstName = studentInfo?["firstName"] as! String?
+            OnTheMapModel.sharedInstance.lastName = studentInfo? ["lastName"] as! String?
             let alertController = UIAlertController()
             alertController.title = "You has already posted a Student Location. Would you like to overwrite the location?"
             let appDelegate = UIApplication.shared.delegate as! AppDelegate
@@ -83,7 +86,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         // data that you can download from parse.
         GetData().getStudentsLocations(renderer: {
             var annotations = [MKPointAnnotation]()
-            for student in (UIApplication.shared.delegate as! AppDelegate).model.students {
+            for student in OnTheMapModel.sharedInstance.students {
                 
                 // The lat and long are used to create a CLLocationCoordinates2D instance.
                 let coordinate = CLLocationCoordinate2D(latitude: student.latitude, longitude: student.longitude)
@@ -134,7 +137,6 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     // to the URL specified in the annotationViews subtitle property.
     public func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
         if control == view.rightCalloutAccessoryView {
-            let app = UIApplication.shared
             if let toOpen = view.annotation?.subtitle! {
                 let userURL = NSURL(string: toOpen) as URL?
                 if userURL == nil || !UIApplication.shared.canOpenURL(userURL!) {

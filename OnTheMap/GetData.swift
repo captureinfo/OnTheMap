@@ -10,7 +10,7 @@ import Foundation
 import MapKit
 class GetData {
     func getStudentsLocations(renderer : @escaping () -> ()) {
-        let request = NetworkService.addCredentialsToRequest(NSMutableURLRequest(url: URL(string: "https://parse.udacity.com/parse/classes/StudentLocation?&order=-updatedAt&limit=100")!))
+        let request = NetworkService.sharedInstance.addCredentialsToRequest(NSMutableURLRequest(url: URL(string: "https://parse.udacity.com/parse/classes/StudentLocation?&order=-updatedAt&limit=100")!))
         let session = URLSession.shared
         var mapDictionary = [String:AnyObject]()
         let task = session.dataTask(with: request as URLRequest) { data, response, error in
@@ -39,8 +39,7 @@ class GetData {
                     }
                 }
                 
-                let appDelegate = UIApplication.shared.delegate as! AppDelegate
-                appDelegate.model.students = students
+                OnTheMapModel.sharedInstance.students = students
                 
                 
                 renderer()

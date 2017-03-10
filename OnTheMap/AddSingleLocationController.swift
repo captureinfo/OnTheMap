@@ -21,13 +21,17 @@ class AddSingleLocationController: UIViewController, MKMapViewDelegate {
     @IBOutlet weak var mapView: MKMapView!
     
     
+    @IBAction func actionDismiss(sender: UIBarButtonItem) {
+        self.dismiss(animated: true, completion: nil)
+    }
+    
     @IBAction func finish(_ sender: AnyObject) {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         var method: String
         var urlString: String
         if appDelegate.onTheMap {
             method = "PUT"
-            urlString = "https://parse.udacity.com/parse/classes/StudentLocation/\(self.appDelegate.model.objectId!)"
+            urlString = "https://parse.udacity.com/parse/classes/StudentLocation/\(OnTheMapModel.sharedInstance.objectId!)"
         } else {
             method = "POST"
             urlString = "https://parse.udacity.com/parse/classes/StudentLocation"
@@ -73,7 +77,7 @@ class AddSingleLocationController: UIViewController, MKMapViewDelegate {
                 // Here we create the annotation and set its coordiate, title, and subtitle properties
                 let annotation = MKPointAnnotation()
                 annotation.coordinate = self.coordinates!
-                annotation.title = "\(self.appDelegate.model.firstName!) \(self.appDelegate.model.lastName!)"
+                annotation.title = "\(OnTheMapModel.sharedInstance.firstName!) \(OnTheMapModel.sharedInstance.lastName!)"
                 annotation.subtitle = self.website
                 self.mapView.addAnnotations([annotation])
                 
@@ -88,11 +92,11 @@ class AddSingleLocationController: UIViewController, MKMapViewDelegate {
     }
     
     func updateStudentLocation(_ coordinates: CLLocationCoordinate2D, sender: AnyObject, method: String, urlString: String) {
-        let request = NetworkService.addCredentialsToRequest(NSMutableURLRequest(url: URL(string: urlString)!))
+        let request = NetworkService.sharedInstance.addCredentialsToRequest(NSMutableURLRequest(url: URL(string: urlString)!))
         let accountKey = appDelegate.accountKey
         request.httpMethod = method
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpBody = "{\"uniqueKey\": \"\(accountKey!)\", \"firstName\": \"\(self.appDelegate.model.firstName!)\", \"lastName\": \"\(self.appDelegate.model.lastName!)\", \"mapString\": \"\(self.address!)\", \"mediaURL\": \"\(self.website!)\", \"latitude\": \(coordinates.latitude), \"longitude\": \(coordinates.longitude)}".data(using: String.Encoding.utf8)
+        request.httpBody = "{\"uniqueKey\": \"\(accountKey!)\", \"firstName\": \"\(OnTheMapModel.sharedInstance.firstName!)\", \"lastName\": \"\(OnTheMapModel.sharedInstance.lastName!)\", \"mapString\": \"\(self.address!)\", \"mediaURL\": \"\(self.website!)\", \"latitude\": \(coordinates.latitude), \"longitude\": \(coordinates.longitude)}".data(using: String.Encoding.utf8)
         let session = URLSession.shared
         let task = session.dataTask(with: request as URLRequest) { data, response, error in
             if error != nil {

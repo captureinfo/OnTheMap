@@ -49,8 +49,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     var onTheMap = false
-    
-    var model = OnTheMapModel()
 
 }
 

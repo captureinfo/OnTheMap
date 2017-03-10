@@ -11,6 +11,9 @@ import MapKit
 
 class MapTableViewController: UITableViewController {
     
+    @IBAction func Logout(_ sender: UIBarButtonItem) {
+        NetworkService.sharedInstance.logoutWithUdacity()
+    }
     
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
     
@@ -18,7 +21,7 @@ class MapTableViewController: UITableViewController {
         let urlString = "https://parse.udacity.com/parse/classes/StudentLocation?where=%7B%22uniqueKey%22%3A%22\(appDelegate.accountKey!)%22%7D"
         
         let url = URL(string: urlString)
-        let request = NetworkService.addCredentialsToRequest(NSMutableURLRequest(url: url!))
+        let request = NetworkService.sharedInstance.addCredentialsToRequest(NSMutableURLRequest(url: url!))
         let session = URLSession.shared
         let task = session.dataTask(with: request as URLRequest) { data, response, error in
             if error != nil { // Handle error
@@ -36,9 +39,9 @@ class MapTableViewController: UITableViewController {
             let controller = storyboard?.instantiateViewController(withIdentifier: "AddLocationNavigationController")
             self.present(controller!, animated: true, completion:nil)
         } else {
-            self.appDelegate.model.objectId = pinData["objectId"] as! String?
-            self.appDelegate.model.firstName = pinData["firstName"] as! String?
-            self.appDelegate.model.lastName = pinData["lastName"] as! String?
+            OnTheMapModel.sharedInstance.objectId = pinData["objectId"] as! String?
+            OnTheMapModel.sharedInstance.firstName = pinData["firstName"] as! String?
+            OnTheMapModel.sharedInstance.lastName = pinData["lastName"] as! String?
             let alertController = UIAlertController()
             alertController.title = "You has already posted a Student Location. Would you like to overwrite the location?"
             let appDelegate = UIApplication.shared.delegate as! AppDelegate
@@ -55,8 +58,6 @@ class MapTableViewController: UITableViewController {
         }
     }
     
-    var students: [Student]!
-    
     override func viewDidLoad() {
         super.viewDidLoad()
     }
@@ -65,8 +66,6 @@ class MapTableViewController: UITableViewController {
         
         //And where you want to start animating
         super.viewWillAppear(animated)
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        students = appDelegate.model.students
         GetData().getStudentsLocations(renderer: { self.tableView.reloadData() })
         
     }
@@ -76,19 +75,19 @@ class MapTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return students.count
+        return OnTheMapModel.sharedInstance.students.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "AnnotationTableViewCell", for: indexPath as IndexPath) as! AnnotationTableViewCell
-        let student = students[indexPath.item]
+        let student = OnTheMapModel.sharedInstance.students[indexPath.item]
         cell.textLabel?.text = "\(student.firstName) \(student.lastName)"
         cell.detailTextLabel?.text = student.mediaURL
         return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let student = students[indexPath.item]
+        let student = OnTheMapModel.sharedInstance.students[indexPath.item]
         let userURL = NSURL(string: student.mediaURL) as URL?
         
         if userURL == nil || !UIApplication.shared.canOpenURL(userURL!) {

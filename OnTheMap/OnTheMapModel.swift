@@ -7,9 +7,13 @@
 //
 
 import Foundation
-class OnTheMapModel {
+struct OnTheMapModel {
     var firstName: String?
     var lastName: String?
     var students = [Student]()
     var objectId: String?
+    
+    static var sharedInstance = OnTheMapModel()
+    
+    private init() {}
 }

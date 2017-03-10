@@ -71,18 +71,18 @@
                                 <rect key="frame" x="0.0" y="92" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="hZ5-oR-MzO" id="YIV-Hk-Vhn">
-                                    <frame key="frameInset" width="375" height="43"/>
+                                    <frame key="frameInset" width="375" height="43.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="0mU-JF-snF">
-                                            <frame key="frameInset" minX="15" minY="4" width="34" height="21"/>
+                                            <frame key="frameInset" minX="15" minY="5" width="33.5" height="20.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Subtitle" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="I36-Ce-slq">
-                                            <frame key="frameInset" minX="15" minY="25" width="44" height="15"/>
+                                            <frame key="frameInset" minX="15" minY="25.5" width="44" height="14.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                             <nil key="textColor"/>
@@ -100,7 +100,8 @@
                     <navigationItem key="navigationItem" title="Title" id="cF8-BZ-L1V">
                         <barButtonItem key="leftBarButtonItem" title="LOGOUT" id="18U-Mm-lA1">
                             <connections>
-                                <segue destination="BYZ-38-t0r" kind="presentation" id="vFb-ML-9e1"/>
+                                <action selector="Logout:" destination="7jl-PJ-PrV" id="Pga-cd-cKF"/>
+                                <segue destination="BYZ-38-t0r" kind="presentation" id="9Ka-mk-2II"/>
                             </connections>
                         </barButtonItem>
                         <rightBarButtonItems>
@@ -161,7 +162,7 @@
                     <navigationItem key="navigationItem" title="Add Location" id="WZE-XM-yoP">
                         <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="4y4-OD-CtW">
                             <connections>
-                                <action selector="actionDismissWithSender:" destination="k6X-6e-MEj" id="e5A-00-ZgN"/>
+                                <action selector="actionDismissWithSender:" destination="k6X-6e-MEj" id="eQ3-8U-pbV"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -206,7 +207,11 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" title="Add Location" id="BlY-tN-cam">
-                        <barButtonItem key="leftBarButtonItem" title="Cancel" id="f4H-A9-NYP"/>
+                        <barButtonItem key="leftBarButtonItem" title="Cancel" id="f4H-A9-NYP">
+                            <connections>
+                                <action selector="actionDismissWithSender:" destination="MhH-k3-Bt9" id="j5S-ss-MaH"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="mapView" destination="XTP-cT-46C" id="FaU-3H-Edy"/>
@@ -264,6 +269,7 @@
                     <navigationItem key="navigationItem" title="Title" id="kzJ-4z-XBY">
                         <barButtonItem key="leftBarButtonItem" title="LOGOUT" id="gb2-wr-98w">
                             <connections>
+                                <action selector="Logout:" destination="l9p-4S-jjx" id="CYI-2d-bwv"/>
                                 <segue destination="BYZ-38-t0r" kind="presentation" id="jUg-t1-3hW"/>
                             </connections>
                         </barButtonItem>
@@ -370,6 +376,6 @@
         <image name="pin" width="32" height="32"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="jUg-t1-3hW"/>
+        <segue reference="9Ka-mk-2II"/>
     </inferredMetricsTieBreakers>
 </document>
