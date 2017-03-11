@@ -26,17 +26,15 @@ class AddSingleLocationController: UIViewController, MKMapViewDelegate {
     }
     
     @IBAction func finish(_ sender: AnyObject) {
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        var method: String
-        var urlString: String
-        if appDelegate.onTheMap {
-            method = "PUT"
-            urlString = "https://parse.udacity.com/parse/classes/StudentLocation/\(OnTheMapModel.sharedInstance.objectId!)"
-        } else {
-            method = "POST"
-            urlString = "https://parse.udacity.com/parse/classes/StudentLocation"
+        NetworkService.sharedInstance.updateStudentLocation(self.coordinates!,
+                                                            address: self.address!,
+                                                            website: self.website!,
+                                                            networkErrorHandler: {self.showAlert(title:"Network not available")}) {
+            DispatchQueue.main.async{
+                self.presentingViewController?.dismiss(animated: false, completion: nil)
+                self.presentingViewController?.dismiss(animated: true, completion: nil)
+            }
         }
-        self.updateStudentLocation(self.coordinates!, sender: sender, method: method, urlString: urlString)
     }
     
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
@@ -91,26 +89,6 @@ class AddSingleLocationController: UIViewController, MKMapViewDelegate {
         })
     }
     
-    func updateStudentLocation(_ coordinates: CLLocationCoordinate2D, sender: AnyObject, method: String, urlString: String) {
-        let request = NetworkService.sharedInstance.addCredentialsToRequest(NSMutableURLRequest(url: URL(string: urlString)!))
-        let accountKey = appDelegate.accountKey
-        request.httpMethod = method
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpBody = "{\"uniqueKey\": \"\(accountKey!)\", \"firstName\": \"\(OnTheMapModel.sharedInstance.firstName!)\", \"lastName\": \"\(OnTheMapModel.sharedInstance.lastName!)\", \"mapString\": \"\(self.address!)\", \"mediaURL\": \"\(self.website!)\", \"latitude\": \(coordinates.latitude), \"longitude\": \(coordinates.longitude)}".data(using: String.Encoding.utf8)
-        let session = URLSession.shared
-        let task = session.dataTask(with: request as URLRequest) { data, response, error in
-            if error != nil {
-                self.showAlert(title:"Network not available")
-            } else {
-                DispatchQueue.main.async{
-                    self.presentingViewController?.dismiss(animated: false, completion: nil)
-                    self.presentingViewController?.dismiss(animated: true, completion: nil)
-                }
-            }
-        }
-        task.resume()
-    }
-    
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         
         let reuseId = "pin"
@@ -129,12 +107,14 @@ class AddSingleLocationController: UIViewController, MKMapViewDelegate {
         
         return pinView
     }
+    
     func showAlert(title:String) {
         let alertController = UIAlertController()
         alertController.title = title
         let cancelAction = UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.cancel)
         alertController.addAction(cancelAction)
-        self.present(alertController, animated: true, completion: nil)    }
+        self.present(alertController, animated: true, completion: nil)
+    }
     
     // This delegate method is implemented to respond to taps. It opens the system browser
     // to the URL specified in the annotationViews subtitle property.

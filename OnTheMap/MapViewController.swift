@@ -1,5 +1,3 @@
-
-import UIKit
 //
 //  mapViewController.swift
 //  OnTheMap
@@ -10,22 +8,8 @@ import UIKit
 import UIKit
 import MapKit
 
-/**
- * This view controller demonstrates the objects involved in displaying pins on a map.
- *
- * The map is a MKMapView.
- * The pins are represented by MKPointAnnotation instances.
- *
- * The view controller conforms to the MKMapViewDelegate so that it can receive a method
- * invocation when a pin annotation is tapped. It accomplishes this using two delegate
- * methods: one to put a small "info" button on the right side of each pin, and one to
- * respond when the "info" button is tapped.
- */
-
 class MapViewController: UIViewController, MKMapViewDelegate {
     
-    // The map. See the setup in the Storyboard file. Note particularly that the view controller
-    // is set up as the map view's delegate.
     @IBOutlet weak var mapView: MKMapView!
     @IBAction func Logout(_ sender: UIBarButtonItem) {
         NetworkService.sharedInstance.logoutWithUdacity()
@@ -38,12 +22,10 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     }
     
     @IBAction func decideToAdd(_ sender: AnyObject) {
-        let urlString = "https://parse.udacity.com/parse/classes/StudentLocation?where=%7B%22uniqueKey%22%3A%22\(appDelegate.accountKey!)%22%7D&order=-updatedAt&limit=100"
+        let urlString = "https://parse.udacity.com/parse/classes/StudentLocation?where=%7B%22uniqueKey%22%3A%22\(appDelegate.accountKey!)%22%7D"
         
         let url = URL(string: urlString)
-        let request = NSMutableURLRequest(url: url!)
-        request.addValue("QrX47CA9cyuGewLdsL7o5Eb8iug6Em8ye0dnAbIr", forHTTPHeaderField: "X-Parse-Application-Id")
-        request.addValue("QuWThTdiRmTux3YaDseUSEpUKo7aBYM737yKd4gY", forHTTPHeaderField: "X-Parse-REST-API-Key")
+        let request = NetworkService.sharedInstance.addCredentialsToRequest(NSMutableURLRequest(url: url!))
         let session = URLSession.shared
         let task = session.dataTask(with: request as URLRequest) { data, response, error in
             if error != nil { // Handle error
@@ -62,10 +44,10 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             let controller = storyboard?.instantiateViewController(withIdentifier: "AddLocationNavigationController")
             self.present(controller!, animated: true, completion:nil)
         } else {
-            let studentInfo = results?[0]
-            OnTheMapModel.sharedInstance.objectId = studentInfo?["objectId"] as! String?
-            OnTheMapModel.sharedInstance.firstName = studentInfo?["firstName"] as! String?
-            OnTheMapModel.sharedInstance.lastName = studentInfo? ["lastName"] as! String?
+            let studentInfo = (results?[0])!
+            OnTheMapModel.sharedInstance.objectId = studentInfo["objectId"] as! String?
+            OnTheMapModel.sharedInstance.firstName = studentInfo["firstName"] as! String?
+            OnTheMapModel.sharedInstance.lastName = studentInfo["lastName"] as! String?
             let alertController = UIAlertController()
             alertController.title = "You has already posted a Student Location. Would you like to overwrite the location?"
             let appDelegate = UIApplication.shared.delegate as! AppDelegate
@@ -87,10 +69,11 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         self.mapView.delegate = self
         self.loadData()
     }
+    
     func loadData() {
         // The "locations" array is an array of dictionary objects that are similar to the JSON
         // data that you can download from parse.
-        GetData().getStudentsLocations(renderer: {
+        NetworkService.sharedInstance.getStudentsLocations(renderer: {
             var annotations = [MKPointAnnotation]()
             for student in OnTheMapModel.sharedInstance.students {
                 
@@ -138,9 +121,6 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         return pinView
     }
     
-    
-    // This delegate method is implemented to respond to taps. It opens the system browser
-    // to the URL specified in the annotationViews subtitle property.
     public func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
         if control == view.rightCalloutAccessoryView {
             if let toOpen = view.annotation?.subtitle! {
@@ -148,9 +128,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
                 if userURL == nil || !UIApplication.shared.canOpenURL(userURL!) {
                     let alertController = UIAlertController()
                     alertController.title = "Invalid Link"
-                    let okAction = UIAlertAction(title:"Dismiss", style:UIAlertActionStyle.default) //{
-                    //  action in self.dismiss(animated: true, completion: nil)
-                    // }
+                    let okAction = UIAlertAction(title:"Dismiss", style:UIAlertActionStyle.default)
                     alertController.addAction(okAction)
                     self.present(alertController, animated: true, completion: nil)
                 } else {
@@ -158,25 +136,5 @@ class MapViewController: UIViewController, MKMapViewDelegate {
                 }
             }
         }
-    }
-    
-    // MARK: - Sample Data
-    
-    // Some sample data. This is a dictionary that is more or less similar to the
-    // JSON data that you will download from Parse.
-    
-    
-    @IBAction func connectParse(_sender: UIButton) {
-        let urlString = "http://quotes.rest/qod.json?category=inspire"
-        let url = URL(string: urlString)
-        let request = NSMutableURLRequest(url: url!)
-        let session = URLSession.shared
-        let task = session.dataTask(with: request as URLRequest) { data, response, error in
-            if error != nil { // Handle error
-                return
-            }
-            print(NSString(data: data!, encoding: String.Encoding.utf8.rawValue)!)
-        }
-        task.resume()
     }
 }

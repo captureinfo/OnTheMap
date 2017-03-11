@@ -10,7 +10,6 @@
 		A50F1CE41E6C7A01008AEAF1 /* OnTheMapModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50F1CE31E6C7A01008AEAF1 /* OnTheMapModel.swift */; };
 		A50F1D071E6FB06A008AEAF1 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50F1D061E6FB06A008AEAF1 /* NetworkService.swift */; };
 		A529C5811E5BAD9D00EFAC87 /* AnnotationTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A529C5801E5BAD9D00EFAC87 /* AnnotationTableViewCell.swift */; };
-		A529C5831E5BEBB100EFAC87 /* GetData.swift in Sources */ = {isa = PBXBuildFile; fileRef = A529C5821E5BEBB100EFAC87 /* GetData.swift */; };
 		A529C5851E5BF84400EFAC87 /* Student.swift in Sources */ = {isa = PBXBuildFile; fileRef = A529C5841E5BF84400EFAC87 /* Student.swift */; };
 		A529C5891E5E065A00EFAC87 /* AddStudentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A529C5881E5E065A00EFAC87 /* AddStudentViewController.swift */; };
 		A52F82721E634D7B00C55101 /* AddSingleLocationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52F82711E634D7B00C55101 /* AddSingleLocationController.swift */; };
@@ -21,14 +20,12 @@
 		A5F617AF1E4244B000FEB099 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F617AE1E4244B000FEB099 /* LoginViewController.swift */; };
 		A5F617B41E4244B000FEB099 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A5F617B31E4244B000FEB099 /* Assets.xcassets */; };
 		A5F617B71E4244B000FEB099 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A5F617B51E4244B000FEB099 /* LaunchScreen.storyboard */; };
-		A5F617BF1E443BAB00FEB099 /* constant.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F617BE1E443BAB00FEB099 /* constant.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		A50F1CE31E6C7A01008AEAF1 /* OnTheMapModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnTheMapModel.swift; sourceTree = "<group>"; };
 		A50F1D061E6FB06A008AEAF1 /* NetworkService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		A529C5801E5BAD9D00EFAC87 /* AnnotationTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnnotationTableViewCell.swift; sourceTree = "<group>"; };
-		A529C5821E5BEBB100EFAC87 /* GetData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GetData.swift; sourceTree = "<group>"; };
 		A529C5841E5BF84400EFAC87 /* Student.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Student.swift; sourceTree = "<group>"; };
 		A529C5881E5E065A00EFAC87 /* AddStudentViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddStudentViewController.swift; sourceTree = "<group>"; };
 		A52F82711E634D7B00C55101 /* AddSingleLocationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddSingleLocationController.swift; sourceTree = "<group>"; };
@@ -41,7 +38,6 @@
 		A5F617B31E4244B000FEB099 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A5F617B61E4244B000FEB099 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A5F617B81E4244B000FEB099 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A5F617BE1E443BAB00FEB099 /* constant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = constant.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,7 +71,6 @@
 			isa = PBXGroup;
 			children = (
 				A5F617AC1E4244B000FEB099 /* AppDelegate.swift */,
-				A5F617BE1E443BAB00FEB099 /* constant.swift */,
 				A50F1CE31E6C7A01008AEAF1 /* OnTheMapModel.swift */,
 				A5F617AE1E4244B000FEB099 /* LoginViewController.swift */,
 				A52F82711E634D7B00C55101 /* AddSingleLocationController.swift */,
@@ -84,7 +79,6 @@
 				A529C5801E5BAD9D00EFAC87 /* AnnotationTableViewCell.swift */,
 				A56553201E5B667300A1DF41 /* MapTableViewController.swift */,
 				A5D09E7C1E58C044001C460D /* MapViewController.swift */,
-				A529C5821E5BEBB100EFAC87 /* GetData.swift */,
 				A529C5841E5BF84400EFAC87 /* Student.swift */,
 				A5F617B31E4244B000FEB099 /* Assets.xcassets */,
 				A5F617B51E4244B000FEB099 /* LaunchScreen.storyboard */,
@@ -171,8 +165,6 @@
 				A529C5811E5BAD9D00EFAC87 /* AnnotationTableViewCell.swift in Sources */,
 				A529C5891E5E065A00EFAC87 /* AddStudentViewController.swift in Sources */,
 				A5F617AF1E4244B000FEB099 /* LoginViewController.swift in Sources */,
-				A529C5831E5BEBB100EFAC87 /* GetData.swift in Sources */,
-				A5F617BF1E443BAB00FEB099 /* constant.swift in Sources */,
 				A5D09E7D1E58C044001C460D /* MapViewController.swift in Sources */,
 				A56553211E5B667300A1DF41 /* MapTableViewController.swift in Sources */,
 				A52F82721E634D7B00C55101 /* AddSingleLocationController.swift in Sources */,

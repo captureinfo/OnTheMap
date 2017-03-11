@@ -30,10 +30,6 @@ class MapTableViewController: UITableViewController {
             self.getStudentLocationHandler(data!)
         }
         task.resume()
-        
-    }
-    @IBAction func reloadData(_ sender: UIBarButtonItem) {
-        GetData().getStudentsLocations(renderer: { self.tableView.reloadData() })
     }
     
     func getStudentLocationHandler(_ data: Data) {
@@ -63,6 +59,10 @@ class MapTableViewController: UITableViewController {
         }
     }
     
+    @IBAction func reloadData(_ sender: UIBarButtonItem) {
+        NetworkService.sharedInstance.getStudentsLocations(renderer: { self.tableView.reloadData() })
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
     }
@@ -71,7 +71,7 @@ class MapTableViewController: UITableViewController {
         
         //And where you want to start animating
         super.viewWillAppear(animated)
-        GetData().getStudentsLocations(renderer: { self.tableView.reloadData() })
+        NetworkService.sharedInstance.getStudentsLocations(renderer: { self.tableView.reloadData() })
         
     }
     
