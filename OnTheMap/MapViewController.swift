@@ -13,6 +13,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     @IBOutlet weak var mapView: MKMapView!
     @IBAction func Logout(_ sender: UIBarButtonItem) {
         NetworkService.sharedInstance.logoutWithUdacity()
+        self.dismiss(animated:true, completion:nil)
     }
     
     let appDelegate = UIApplication.shared.delegate as! AppDelegate

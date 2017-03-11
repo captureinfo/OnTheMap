@@ -12,10 +12,38 @@ import MapKit
 class NetworkService {
     static let sharedInstance = NetworkService()
     
+    let appDelegate = UIApplication.shared.delegate as! AppDelegate
+    
     func addCredentialsToRequest(_ request: NSMutableURLRequest) -> NSMutableURLRequest {
         request.addValue("QrX47CA9cyuGewLdsL7o5Eb8iug6Em8ye0dnAbIr", forHTTPHeaderField: "X-Parse-Application-Id")
         request.addValue("QuWThTdiRmTux3YaDseUSEpUKo7aBYM737yKd4gY", forHTTPHeaderField: "X-Parse-REST-API-Key")
         return request
+    }
+    func loginWithUdacity(usernameText: String, passwordText: String, validator: @escaping (Data?, URLResponse?, Error?) -> Bool, renderer: @escaping () -> ()) {
+        let request = NSMutableURLRequest(url: URL(string:"https://www.udacity.com/api/session")!)
+        request.httpMethod = "POST"
+        request.addValue("application/json", forHTTPHeaderField: "Accept")
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = ("{\"udacity\": {\"username\":\"" + usernameText + "\", \"password\": \"" + passwordText + "\"}}").data(using: String.Encoding.utf8)
+        let session = URLSession.shared
+        var accountDictionary = [String:AnyObject]()
+        let task = session.dataTask(with:request as URLRequest) {
+            data, response, error in
+            if (!validator(data, response, error)) {
+                return
+            }
+            
+            let range = Range(uncheckedBounds: (5, (data?.count)!))
+            let newData = data?.subdata(in: range)
+            accountDictionary = try! JSONSerialization.jsonObject(with: newData!, options: .allowFragments) as! [String : AnyObject]
+            let account = accountDictionary["account"] as! [String : AnyObject]
+            self.appDelegate.accountKey = account["key"] as? String
+            
+            OperationQueue.main.addOperation{
+                renderer()
+            }
+        }
+        task.resume()
     }
     
     func logoutWithUdacity() {
@@ -36,7 +64,6 @@ class NetworkService {
             }
             let range = Range(uncheckedBounds: (5, data!.count - 5))
             let newData = data?.subdata(in: range) /* subset response data! */
-            print(NSString(data: newData!, encoding: String.Encoding.utf8.rawValue)!)
         }
         task.resume()
     }
@@ -81,8 +108,6 @@ class NetworkService {
         }
         task.resume()
     }
-    
-    let appDelegate = UIApplication.shared.delegate as! AppDelegate
     
     func updateStudentLocation(_ coordinates: CLLocationCoordinate2D, address: String, website: String, networkErrorHandler: @escaping () -> (), renderer: @escaping () -> ()) {
         var urlString: String

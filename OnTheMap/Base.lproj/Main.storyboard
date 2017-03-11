@@ -101,7 +101,6 @@
                         <barButtonItem key="leftBarButtonItem" title="LOGOUT" id="18U-Mm-lA1">
                             <connections>
                                 <action selector="Logout:" destination="7jl-PJ-PrV" id="Pga-cd-cKF"/>
-                                <segue destination="BYZ-38-t0r" kind="presentation" id="9Ka-mk-2II"/>
                             </connections>
                         </barButtonItem>
                         <rightBarButtonItems>
@@ -274,7 +273,6 @@
                         <barButtonItem key="leftBarButtonItem" title="LOGOUT" id="gb2-wr-98w">
                             <connections>
                                 <action selector="Logout:" destination="l9p-4S-jjx" id="CYI-2d-bwv"/>
-                                <segue destination="BYZ-38-t0r" kind="presentation" id="jUg-t1-3hW"/>
                             </connections>
                         </barButtonItem>
                         <rightBarButtonItems>
@@ -383,7 +381,4 @@
         <image name="map" width="32" height="32"/>
         <image name="pin" width="32" height="32"/>
     </resources>
-    <inferredMetricsTieBreakers>
-        <segue reference="jUg-t1-3hW"/>
-    </inferredMetricsTieBreakers>
 </document>

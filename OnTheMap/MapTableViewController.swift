@@ -13,6 +13,7 @@ class MapTableViewController: UITableViewController {
     
     @IBAction func Logout(_ sender: UIBarButtonItem) {
         NetworkService.sharedInstance.logoutWithUdacity()
+        self.dismiss(animated:true, completion:nil)
     }
     
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
