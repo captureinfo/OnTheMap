@@ -32,16 +32,21 @@ class MapTableViewController: UITableViewController {
         task.resume()
         
     }
+    @IBAction func reloadData(_ sender: UIBarButtonItem) {
+        GetData().getStudentsLocations(renderer: { self.tableView.reloadData() })
+    }
     
     func getStudentLocationHandler(_ data: Data) {
         let pinData = try! JSONSerialization.jsonObject(with: data, options: .allowFragments) as! [String : AnyObject]
-        if (pinData["results"] == nil || pinData["results"]?.count == 0) {
+        let results = pinData["results"] as! [[String:AnyObject]]?
+        if (results == nil || results?.count == 0) {
             let controller = storyboard?.instantiateViewController(withIdentifier: "AddLocationNavigationController")
             self.present(controller!, animated: true, completion:nil)
         } else {
-            OnTheMapModel.sharedInstance.objectId = pinData["objectId"] as! String?
-            OnTheMapModel.sharedInstance.firstName = pinData["firstName"] as! String?
-            OnTheMapModel.sharedInstance.lastName = pinData["lastName"] as! String?
+            let studentInfo = (results?[0])!
+            OnTheMapModel.sharedInstance.objectId = studentInfo["objectId"] as! String?
+            OnTheMapModel.sharedInstance.firstName = studentInfo["firstName"] as! String?
+            OnTheMapModel.sharedInstance.lastName = studentInfo["lastName"] as! String?
             let alertController = UIAlertController()
             alertController.title = "You has already posted a Student Location. Would you like to overwrite the location?"
             let appDelegate = UIApplication.shared.delegate as! AppDelegate

@@ -83,11 +83,11 @@ class AddSingleLocationController: UIViewController, MKMapViewDelegate {
                 
                 let homeLocation = CLLocation(latitude: (self.coordinates?.latitude)!, longitude:(self.coordinates?.longitude)!)
                 self.centerMapOnLocation(location: homeLocation)
-                
-                //For stop:
-                indicator.stopAnimating()
-                indicator.hidesWhenStopped = true
             }
+            
+            //For stop:
+            indicator.stopAnimating()
+            indicator.hidesWhenStopped = true
         })
     }
     
@@ -102,7 +102,10 @@ class AddSingleLocationController: UIViewController, MKMapViewDelegate {
             if error != nil {
                 self.showAlert(title:"Network not available")
             } else {
-                self.performSegue(withIdentifier: "finishSegue", sender: sender)
+                DispatchQueue.main.async{
+                    self.presentingViewController?.dismiss(animated: false, completion: nil)
+                    self.presentingViewController?.dismiss(animated: true, completion: nil)
+                }
             }
         }
         task.resume()

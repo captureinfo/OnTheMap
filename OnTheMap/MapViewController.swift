@@ -33,6 +33,10 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
     
+    @IBAction func reloadData(_ sender: UIBarButtonItem) {
+        self.loadData()
+    }
+    
     @IBAction func decideToAdd(_ sender: AnyObject) {
         let urlString = "https://parse.udacity.com/parse/classes/StudentLocation?where=%7B%22uniqueKey%22%3A%22\(appDelegate.accountKey!)%22%7D&order=-updatedAt&limit=100"
         
@@ -81,7 +85,9 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.mapView.delegate = self
-        
+        self.loadData()
+    }
+    func loadData() {
         // The "locations" array is an array of dictionary objects that are similar to the JSON
         // data that you can download from parse.
         GetData().getStudentsLocations(renderer: {
@@ -102,9 +108,9 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             }
             
             // When the array is complete, we add the annotations to the map.
+            self.mapView.removeAnnotations(self.mapView.annotations)
             self.mapView.addAnnotations(annotations)
         })
-        
     }
     
     

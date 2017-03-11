@@ -42,7 +42,7 @@ class GetData {
                 OnTheMapModel.sharedInstance.students = students
                 
                 
-                renderer()
+                DispatchQueue.main.async(execute: renderer)
             }
         }
         task.resume()

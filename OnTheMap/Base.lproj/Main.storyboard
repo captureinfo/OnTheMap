@@ -105,7 +105,11 @@
                             </connections>
                         </barButtonItem>
                         <rightBarButtonItems>
-                            <barButtonItem systemItem="refresh" id="SDp-JD-K08"/>
+                            <barButtonItem systemItem="refresh" id="SDp-JD-K08">
+                                <connections>
+                                    <action selector="reloadData:" destination="7jl-PJ-PrV" id="JDM-5H-Fue"/>
+                                </connections>
+                            </barButtonItem>
                             <barButtonItem image="pin" id="F0x-Dh-6xY">
                                 <connections>
                                     <action selector="decideToAdd:" destination="7jl-PJ-PrV" id="GnT-0a-HDN"/>
@@ -274,7 +278,11 @@
                             </connections>
                         </barButtonItem>
                         <rightBarButtonItems>
-                            <barButtonItem systemItem="refresh" id="uiF-LC-RWU"/>
+                            <barButtonItem systemItem="refresh" id="uiF-LC-RWU">
+                                <connections>
+                                    <action selector="reloadData:" destination="l9p-4S-jjx" id="wkJ-Cl-LaQ"/>
+                                </connections>
+                            </barButtonItem>
                             <barButtonItem image="pin" id="JGQ-ws-snA">
                                 <connections>
                                     <action selector="decideToAdd:" destination="l9p-4S-jjx" id="sXi-EV-I4G"/>
@@ -376,6 +384,6 @@
         <image name="pin" width="32" height="32"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="9Ka-mk-2II"/>
+        <segue reference="jUg-t1-3hW"/>
     </inferredMetricsTieBreakers>
 </document>
